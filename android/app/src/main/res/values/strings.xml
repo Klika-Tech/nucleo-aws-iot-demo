@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name">Nucleo Board Android Dashboard</string>
+
+    <string name="dialog_title_1">Welcome to Nucleo Board Android Dashboard!</string>
+    <string name="dialog_title_2">Zoom in to see the details. You can also move along the timeline. Last 24 hours of data is rendered.</string>
+
+    <string name="dialog_button">Got it!</string>
+    <string name="server_error_text">Server error</string>
+
+    <string name="setting_label">Settings</string>
+    <string name="setting_label_chart_type">Chart type</string>
+    <string name="setting_label_cities">Cities</string>
+
+    <string name="setting_rb_line">Line</string>
+    <string name="setting_rb_area">Area</string>
+
+    <string name="setting_rb_cels">C</string>
+    <string name="setting_rb_faren">F</string>
+    <string name="setting_bar">hPa</string>
+    <string name="setting_magnet">\u00B5T</string>
+    <string name="setting_magnet_x">\u00B5T</string>
+    <string name="setting_magnet_y">\u00B5T</string>
+    <string name="setting_magnet_z">\u00B5T</string>
+
+
+    <string name="title_temperature">Temperature</string>
+    <string name="title_humidity">Humidity</string>
+    <string name="title_magnetometer">Magnetometer</string>
+    <string name="title_barometer">Barometer</string>
+    <string name="title_gyroscope">Gyroscope</string>
+    <string name="angle">%1$s\u00B0</string>
+    <string name="roll">Roll</string>
+    <string name="pitch">Pitch</string>
+    <string name="yaw">Yaw</string>
+    <string name="title_accelerometer">Accelerometer</string>
+    <string name="acc_x">Xg</string>
+    <string name="acc_y">Yg</string>
+    <string name="acc_z">Zg</string>
+
+    <string name="x_sensor">%1$s Sensor</string>
+
+</resources>

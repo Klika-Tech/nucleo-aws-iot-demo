@@ -1,0 +1,168 @@
+
+.nucleo-chart-container {
+
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  bottom: 20px;
+  left: 20px;
+
+  .chart-side-bar {
+    float: right;
+    width: 130px;
+    font-size: small;
+  }
+
+  .weather-chart, .dimensions-chart {
+
+    position: absolute;
+    top: 0;
+    right: 140px;
+    bottom: 0;
+    left: 0;
+
+    &.simple {
+      right: 0;
+    }
+
+    svg {
+      font: 10px sans-serif;
+    }
+
+    .zoom {
+      fill: none;
+      pointer-events: all;
+    }
+
+    .area {
+      fill: #6dcab7;
+      clip-path: url(#clip);
+    }
+
+    .line {
+      stroke: #2eb398;
+      stroke-width: 1px; // XXX: Perfomance fix for chrome-only, see https://bugs.chromium.org/p/chromium/issues/detail?id=455429
+      fill: none;
+      clip-path: url(#clip);
+
+      &.x {
+        stroke: #E76049;
+      }
+
+      &.y {
+        stroke: #4caf50;
+      }
+
+      &.z {
+        stroke: #4c9af1;
+      }
+    }
+
+    .context .line {
+      stroke-width: 1.5px;
+    }
+
+    .line.weather {
+      stroke: #8BC34A;
+      stroke-width: 2px;
+    }
+
+    .axis {
+
+      path, line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+      }
+
+      .tick text {
+        font-family: Lato, "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif;
+        font-size: 11px;
+        fill: #666666;
+      }
+
+      .tick line, .domain {
+        opacity: .15;
+      }
+
+    }
+
+    .brush .extent {
+      stroke: #fff;
+      fill-opacity: .125;
+      shape-rendering: crispEdges;
+    }
+
+    circle.marker {
+      fill: #E76049;
+      stroke: #E69090;
+    }
+
+    .cursor-focus {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1px;
+      background: #89949B;
+    }
+
+    .cursor-point {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 10px;
+      width: 10px;
+      border: 1px solid #2eb398;
+      border-radius: 5px;
+      background: #b6e5db;
+    }
+
+    .cursor-tooltip, .city-label {
+      position: absolute;
+      font-size: small;
+      font-family: Lato, "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif;
+      background-color: #2eb398;
+      padding: 1px 6px 0px;
+      color: white;
+      border: 1px solid white;
+      border-radius: 4px;
+      pointer-events: none;
+    }
+
+    .cursor-tooltip {
+      white-space: nowrap;
+
+      &.marker {
+        background-color: #E76049;
+        border-color: #E76049;
+      }
+    }
+
+    .city-label {
+      background-color: #8BC34A;
+      right: 15px;
+      border-radius: 2px;
+    }
+
+    .focus-bg {
+      opacity: 0;
+    }
+
+    .focus-cursor {
+      stroke: black;
+      stroke-width: 1px;
+      stroke-opacity: .3;
+      shape-rendering: crispEdges;
+      visibility: hidden;
+    }
+    .context-marker {
+      stroke: #E76049;
+      shape-rendering: crispEdges;
+    }
+  }
+
+  .dimensions-chart {
+    right: 0;
+  }
+
+}

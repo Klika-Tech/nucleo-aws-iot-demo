@@ -1,0 +1,15 @@
+{
+  "settings":
+  {
+    "endpoint_hostname": "https://xxxxxxxxxx.execute-api.us-east-1.amazonaws.com",
+    "region":"us-east-1",
+
+    "topic": "Nucleo/data",
+    "customer_specific_endpoint_prefix":"XXXXXXXXXXXXXX",
+    "cognito_pool_id": "us-east-1:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "aws_iot_policy_name":"Nucleo-Policy",
+    "keystore_name":"iot_keystore",
+    "keystore_password":"password",
+    "certificate_id":"default"
+  }
+}

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="colorGraphLine">#EEEEEE</color>
+
+    <color name="colorSectionLine">#eeeeee</color>
+
+    <color name="bg_city_main">#353535</color>
+
+    <color name="bg_city1">#4680d8</color>
+    <color name="bg_city2">#eec10c</color>
+    <color name="bg_city3">#6bbd46</color>
+    <color name="bg_city4">#c64242</color>
+    <color name="bg_city5">#48b1a6</color>
+    <color name="bg_city6">#a560d1</color>
+    <color name="bg_city7">#f39ee4</color>
+    <color name="bg_city8">#ff903e</color>
+    <color name="bg_city9">#999999</color>
+
+    <color name="btn_start_selector_1">#4680d8</color>
+    <color name="btn_start_selector_2">#3265b2</color>
+
+    <color name="bg_home">#1C242B</color>
+    <color name="bg_home_button">#283440</color>
+    <color name="text_home_title">#39a9dc</color>
+    <color name="text_home_value">#ffffff</color>
+
+
+    <color name="text_home_x">#e74c3c</color>
+    <color name="text_home_y">#27ae60</color>
+    <color name="text_home_z">#3498db</color>
+
+
+
+</resources>

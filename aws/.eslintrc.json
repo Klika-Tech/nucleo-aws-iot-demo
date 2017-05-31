@@ -1,0 +1,12 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module"
+  },
+  "env": {
+    "commonjs": true
+  },
+  "rules": {
+    "quotes": "off"
+  }
+}

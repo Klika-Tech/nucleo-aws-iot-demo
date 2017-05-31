@@ -1,0 +1,30 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <dimen name="large_padding">20dp</dimen>
+    <dimen name="medium_padding">18dp</dimen>
+    <dimen name="default_padding">16dp</dimen>
+    <dimen name="small_padding">8dp</dimen>
+    <dimen name="x_small_padding">4dp</dimen>
+
+    <dimen name="default_text_size">16sp</dimen>
+    <dimen name="xx_large_text_size">38sp</dimen>
+    <dimen name="x_large_text_size">28sp</dimen>
+    <dimen name="large_text_size">24sp</dimen>
+
+    <dimen name="sensor_plate_default_height">155dp</dimen>
+
+    <dimen name="home_button_title_padding_left">15dp</dimen>
+    <dimen name="home_button_title_padding_top">10dp</dimen>
+    <dimen name="home_button_title_drawable_padding">10dp</dimen>
+
+    <dimen name="home_button_value_padding_left">10dp</dimen>
+
+    <dimen name="home_button_text_size">14sp</dimen>
+
+    <dimen name="home_text_padding_left_1">14dp</dimen>
+    <dimen name="home_text_padding_left_2">15sp</dimen>
+
+</resources>

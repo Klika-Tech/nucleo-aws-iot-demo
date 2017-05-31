@@ -1,0 +1,11 @@
+.dashboard {
+  .chart-panel-body {
+    height: 335px;
+  }
+
+  .weather-chart, .dimensions-chart {
+    .line {
+      stroke-width: 1px;
+    }
+  }
+}

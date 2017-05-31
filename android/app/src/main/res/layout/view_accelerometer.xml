@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    android:orientation="vertical">
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="30dp"
+        android:layout_height="56dp"
+        android:layout_centerInParent="true"
+        android:background="@mipmap/accelerometer_bg" />
+
+    <View
+        android:id="@+id/positive"
+        android:layout_width="22dp"
+        android:layout_height="0dp"
+        android:background="@android:color/holo_red_dark"
+        android:layout_above="@+id/view2"
+        android:layout_centerHorizontal="true" />
+
+    <View
+        android:id="@+id/view2"
+        android:layout_width="30dp"
+        android:layout_height="0dp"
+        android:layout_centerInParent="true" />
+
+    <View
+        android:id="@+id/negative"
+        android:layout_width="22dp"
+        android:layout_height="0dp"
+        android:background="@android:color/holo_green_dark"
+        android:layout_alignTop="@+id/positive"
+        android:layout_alignLeft="@+id/positive"
+        android:layout_alignStart="@+id/positive" />
+</RelativeLayout>

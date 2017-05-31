@@ -1,0 +1,13 @@
+.loader {
+
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  svg {
+    stroke: #2EB398;
+    width: 20vh;
+    height: 20vh;
+  }
+}

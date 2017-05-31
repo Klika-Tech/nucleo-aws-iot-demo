@@ -1,0 +1,89 @@
+.nucleo-chart-container {
+
+  .weather-chart-params {
+    float: right;
+    width: 130px;
+    font-size: small;
+
+    .form-group {
+      margin-bottom: 5px;
+
+      .control-label {
+        margin-bottom: 0;
+      }
+
+      .radio, .checkbox {
+        margin-top: 2px;
+        margin-bottom: 2px;
+      }
+    }
+  }
+
+  .weather-chart {
+    .city-625144 {
+      stroke: #A04942;
+      background-color: #A04942;
+    }
+    .city-5128638 {
+      stroke: #E66390;
+      background-color: #E66390;
+    }
+    .city-5368361 {
+      stroke: #B61ED0;
+      background-color: #B61ED0;
+    }
+    .city-5809844 {
+      stroke: #6523DA;
+      background-color: #6523DA;
+    }
+    .city-4887398 {
+      stroke: #3F51B5;
+      background-color: #3F51B5;
+    }
+    .city-4140963 {
+      stroke: #2A4458;
+      background-color: #2A4458;
+    }
+    .city-4164138 {
+      stroke: #2E6B65;
+      background-color: #2E6B65;
+    }
+    .city-5391959 {
+      stroke: #46C54B;
+      background-color: #46C54B;
+    }
+    .city-2643743 {
+      stroke: #8BC34A;
+      background-color: #8BC34A;
+    }
+    .city-3117735 {
+      stroke: #AEBB2C;
+      background-color: #AEBB2C;
+    }
+    .city-3173435 {
+      stroke: #ABA14E;
+      background-color: #ABA14E;
+    }
+    .city-3169070 {
+      stroke: #AF9443;
+      background-color: #AF9443;
+    }
+    .city-2950158 {
+      stroke: #B78B49;
+      background-color: #B78B49;
+    }
+    .city-3067696 {
+      stroke: #A9482A;
+      background-color: #A9482A;
+    }
+    .city-2988507 {
+      stroke: #795548;
+      background-color: #795548;
+    }
+    .city-524901 {
+      stroke: #909090;
+      background-color: #909090;
+    }
+  }
+
+}

@@ -1,0 +1,823 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_home"
+    tools:context="com.klikatech.nucleo.activity.HomeActivity">
+
+    <FrameLayout
+        android:id="@+id/fTitleView"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize">
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="STM32 Nucleo"
+            android:textColor="@color/text_home_title"
+            android:textSize="@dimen/abc_text_size_title_material"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/ivHome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|center_vertical"
+            android:layout_marginLeft="15dp"
+            android:src="@mipmap/home" />
+
+        <ImageView
+            android:id="@+id/ivLogo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:layout_marginRight="15dp"
+            android:src="@mipmap/st_logo" />
+    </FrameLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/lFooterView"
+        android:layout_below="@+id/fTitleView"
+        android:id="@+id/scrollView">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/sensor_plate_default_height"
+                android:orientation="horizontal"
+                tools:visibility="visible">
+
+                <LinearLayout
+                    android:id="@+id/vTemperature"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="@dimen/x_small_padding"
+                    android:layout_marginLeft="@dimen/small_padding"
+                    android:layout_marginRight="@dimen/x_small_padding"
+                    android:layout_marginTop="@dimen/x_small_padding"
+                    android:layout_weight="1"
+                    android:background="@color/bg_home_button"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:drawableLeft="@mipmap/temperature"
+                        android:drawablePadding="@dimen/home_button_title_drawable_padding"
+                        android:gravity="center_vertical"
+                        android:paddingTop="@dimen/home_button_title_padding_top"
+                        android:text="@string/title_temperature"
+                        android:textColor="@color/text_home_title"
+                        android:textIsSelectable="false"
+                        android:textSize="@dimen/home_button_text_size"
+                        android:paddingLeft="@dimen/home_text_padding_left_1" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/large_padding"
+                        android:orientation="horizontal"
+                        android:paddingRight="@dimen/small_padding">
+
+                        <TextView
+                            android:id="@+id/tvTemperatureF"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0 \u00B0"
+                            android:textColor="@color/text_home_value"
+                            android:textSize="@dimen/xx_large_text_size"
+                            android:textStyle="bold"
+                            android:paddingLeft="@dimen/home_text_padding_left_1" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="bottom"
+                            android:text="@string/setting_rb_faren"
+                            android:textColor="@color/text_home_value"
+                            android:textSize="@dimen/large_text_size" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingRight="@dimen/small_padding">
+
+                        <TextView
+                            android:id="@+id/tvTemperatureC"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0 \u00B0"
+                            android:textColor="@color/text_home_value"
+                            android:textSize="@dimen/default_text_size"
+                            android:textStyle="bold"
+                            android:paddingLeft="@dimen/home_text_padding_left_2" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/setting_rb_cels"
+                            android:textColor="@color/text_home_value" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/vHumidity"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="@dimen/x_small_padding"
+                    android:layout_marginLeft="@dimen/x_small_padding"
+                    android:layout_marginRight="@dimen/small_padding"
+                    android:layout_marginTop="@dimen/x_small_padding"
+                    android:layout_weight="1"
+                    android:background="@color/bg_home_button"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@mipmap/humidity"
+                        android:drawablePadding="@dimen/home_button_title_drawable_padding"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="@dimen/home_text_padding_left_1"
+                        android:paddingTop="@dimen/home_button_title_padding_top"
+                        android:text="@string/title_humidity"
+                        android:textColor="@color/text_home_title"
+                        android:textSize="@dimen/home_button_text_size" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/medium_padding"
+                        android:orientation="horizontal"
+                        android:paddingRight="@dimen/small_padding">
+
+                        <TextView
+                            android:id="@+id/tvHumidityVal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="@dimen/home_text_padding_left_1"
+                            android:text="0"
+                            android:textColor="@color/text_home_value"
+                            android:textSize="@dimen/xx_large_text_size"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="bottom"
+                            android:text="%"
+                            android:textColor="@color/text_home_value"
+                            android:textSize="@dimen/large_text_size" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/sensor_plate_default_height"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/vMagnetometer"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="@dimen/x_small_padding"
+                    android:layout_marginLeft="@dimen/small_padding"
+                    android:layout_marginRight="@dimen/x_small_padding"
+                    android:layout_marginTop="@dimen/x_small_padding"
+                    android:layout_weight="1"
+                    android:background="@color/bg_home_button"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@mipmap/magnetometer"
+                        android:drawablePadding="@dimen/home_button_title_drawable_padding"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="@dimen/home_text_padding_left_1"
+                        android:paddingTop="@dimen/home_button_title_padding_top"
+                        android:text="@string/title_magnetometer"
+                        android:textColor="@color/text_home_title"
+                        android:textSize="@dimen/home_button_text_size" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/medium_padding"
+                        android:orientation="horizontal"
+                        android:paddingRight="@dimen/small_padding">
+
+                        <TextView
+                            android:id="@+id/tvMagnetometerVal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="@dimen/home_text_padding_left_1"
+                            android:text="0"
+                            android:textColor="@color/text_home_value"
+                            android:textSize="@dimen/x_large_text_size"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="bottom"
+                            android:text="@string/setting_magnet"
+                            android:textColor="@color/text_home_value"
+                            android:textSize="@dimen/large_text_size" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="10dp"
+                        android:paddingLeft="@dimen/home_text_padding_left_2">
+
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+
+                            <RelativeLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:id="@+id/tvMagnetometerValX"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:textColor="@color/text_home_value"
+                                    android:textSize="@dimen/default_text_size"
+                                    android:text="0.0"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_alignParentLeft="true"
+                                    android:layout_alignParentStart="true" />
+                            </RelativeLayout>
+
+                            <RelativeLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:textColor="@color/text_home_x"
+                                    android:textSize="@dimen/default_text_size"
+                                    android:text="X"
+                                    android:layout_weight="1"
+                                    android:id="@+id/tv_mx"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_alignParentLeft="true"
+                                    android:layout_alignParentStart="true" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:textColor="@color/text_home_value"
+                                    android:textSize="@dimen/default_text_size"
+                                    android:text="@string/setting_magnet_x"
+                                    android:layout_weight="1"
+                                    android:id="@+id/textView4"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_toRightOf="@+id/tv_mx"
+                                    android:layout_toEndOf="@+id/tv_mx" />
+
+                            </RelativeLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1">
+
+                            <RelativeLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:id="@+id/tvMagnetometerValY"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:textColor="@color/text_home_value"
+                                    android:textSize="@dimen/default_text_size"
+                                    android:layout_weight="1"
+                                    android:text="0.0" />
+                            </RelativeLayout>
+
+                            <RelativeLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:textColor="@color/text_home_value"
+                                    android:textSize="@dimen/default_text_size"
+                                    android:text="@string/setting_magnet_y"
+                                    android:layout_weight="1"
+                                    android:id="@+id/textView5"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_toRightOf="@+id/tv_my"
+                                    android:layout_toEndOf="@+id/tv_my" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:textColor="@color/text_home_y"
+                                    android:textSize="@dimen/default_text_size"
+                                    android:text="Y"
+                                    android:layout_weight="1"
+                                    android:id="@+id/tv_my"
+                                    android:layout_alignParentTop="true" />
+                            </RelativeLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1">
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:id="@+id/tvMagnetometerValZ"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:textColor="@color/text_home_value"
+                                    android:textSize="@dimen/default_text_size"
+                                    android:layout_weight="1"
+                                    android:text="0.0" />
+                            </RelativeLayout>
+
+                            <RelativeLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:textColor="@color/text_home_value"
+                                    android:textSize="@dimen/default_text_size"
+                                    android:text="@string/setting_magnet_z"
+                                    android:layout_weight="1"
+                                    android:id="@+id/tv_mz"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_toRightOf="@+id/textView6"
+                                    android:layout_toEndOf="@+id/textView6" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:textColor="@color/text_home_z"
+                                    android:textSize="@dimen/default_text_size"
+                                    android:text="Z"
+                                    android:layout_weight="1"
+                                    android:id="@+id/textView6"
+                                    android:layout_alignParentTop="true" />
+                            </RelativeLayout>
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/vBarometer"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="@dimen/x_small_padding"
+                    android:layout_marginLeft="@dimen/x_small_padding"
+                    android:layout_marginRight="@dimen/small_padding"
+                    android:layout_marginTop="@dimen/x_small_padding"
+                    android:layout_weight="1"
+                    android:background="@color/bg_home_button"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@mipmap/barometer"
+                        android:drawablePadding="@dimen/home_button_title_drawable_padding"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="@dimen/home_text_padding_left_1"
+                        android:paddingTop="@dimen/home_button_title_padding_top"
+                        android:text="@string/title_barometer"
+                        android:textColor="@color/text_home_title"
+                        android:textSize="@dimen/home_button_text_size" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/medium_padding"
+                        android:orientation="horizontal"
+                        android:paddingRight="@dimen/small_padding">
+
+                        <TextView
+                            android:id="@+id/tvBarometerVal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="@dimen/home_text_padding_left_1"
+                            android:text="0"
+                            android:textColor="@color/text_home_value"
+                            android:textSize="@dimen/x_large_text_size"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="bottom"
+                            android:text="@string/setting_bar"
+                            android:textColor="@color/text_home_value"
+                            android:textSize="@dimen/large_text_size" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/sensor_plate_default_height"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/vGyroscope"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="@dimen/x_small_padding"
+                    android:layout_marginLeft="@dimen/small_padding"
+                    android:layout_marginRight="@dimen/x_small_padding"
+                    android:layout_marginTop="@dimen/x_small_padding"
+                    android:layout_weight="1"
+                    android:background="@color/bg_home_button"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@mipmap/gyroscope"
+                        android:drawablePadding="@dimen/home_button_title_drawable_padding"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="@dimen/home_button_title_padding_left"
+                        android:paddingTop="@dimen/home_button_title_padding_top"
+                        android:text="@string/title_gyroscope"
+                        android:textColor="@color/text_home_title"
+                        android:textSize="@dimen/home_button_text_size" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="10dp">
+
+                        <LinearLayout
+                            android:id="@+id/vGyroX"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <com.klikatech.nucleo.custom.GyroscopeView
+                                android:id="@+id/gyroX"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+
+                            <TextView
+                                android:id="@+id/tvGyroX"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:textColor="@color/text_home_value" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="@string/roll"
+                                android:textColor="@color/text_home_x" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/vGyroY"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <com.klikatech.nucleo.custom.GyroscopeView
+                                android:id="@+id/gyroY"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+
+
+                            <TextView
+                                android:id="@+id/tvGyroY"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:textColor="@color/text_home_value" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="@string/pitch"
+                                android:textColor="@color/text_home_y" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/vGyroZ"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <com.klikatech.nucleo.custom.GyroscopeView
+                                android:id="@+id/gyroZ"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+
+
+                            <TextView
+                                android:id="@+id/tvGyroZ"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:textColor="@color/text_home_value" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="@string/yaw"
+                                android:textColor="@color/text_home_z" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/vAccelerometer"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="@dimen/x_small_padding"
+                    android:layout_marginLeft="@dimen/x_small_padding"
+                    android:layout_marginRight="@dimen/small_padding"
+                    android:layout_marginTop="@dimen/x_small_padding"
+                    android:layout_weight="1"
+                    android:background="@color/bg_home_button"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@mipmap/accelerometer"
+                        android:drawablePadding="@dimen/home_button_title_drawable_padding"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="@dimen/home_text_padding_left_1"
+                        android:paddingTop="@dimen/home_button_title_padding_top"
+                        android:text="@string/title_accelerometer"
+                        android:textColor="@color/text_home_title"
+                        android:textSize="@dimen/home_button_text_size" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="5dp">
+
+                        <LinearLayout
+                            android:id="@+id/vAccX"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <com.klikatech.nucleo.custom.AccelerometerView
+                                android:id="@+id/accX"
+                                android:layout_width="match_parent"
+                                android:layout_height="56dp" />
+
+                            <TextView
+                                android:id="@+id/tvAccX"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:textColor="@color/text_home_value" />
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:textColor="@color/text_home_value"
+                                    android:textSize="@dimen/default_text_size"
+                                    android:text="g"
+                                    android:layout_weight="1"
+                                    android:id="@+id/textView7"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_centerHorizontal="true" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:textColor="@color/text_home_x"
+                                    android:textSize="@dimen/default_text_size"
+                                    android:text="X"
+                                    android:layout_weight="1"
+                                    android:id="@+id/textView8"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_toLeftOf="@+id/textView7"
+                                    android:layout_toStartOf="@+id/textView7" />
+                            </RelativeLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/vAccY"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <com.klikatech.nucleo.custom.AccelerometerView
+                                android:id="@+id/accY"
+                                android:layout_width="match_parent"
+                                android:layout_height="56dp" />
+
+
+                            <TextView
+                                android:id="@+id/tvAccY"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:textColor="@color/text_home_value" />
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" >
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:textColor="@color/text_home_value"
+                                    android:textSize="@dimen/default_text_size"
+                                    android:text="g"
+                                    android:layout_weight="1"
+                                    android:id="@+id/textView10"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_centerHorizontal="true" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:textColor="@color/text_home_y"
+                                    android:textSize="@dimen/default_text_size"
+                                    android:text="Y"
+                                    android:layout_weight="1"
+                                    android:id="@+id/textView12"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_toLeftOf="@+id/textView10"
+                                    android:layout_toStartOf="@+id/textView10" />
+                            </RelativeLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/vAccZ"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <com.klikatech.nucleo.custom.AccelerometerView
+                                android:id="@+id/accZ"
+                                android:layout_width="match_parent"
+                                android:layout_height="56dp" />
+
+
+                            <TextView
+                                android:id="@+id/tvAccZ"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:textColor="@color/text_home_value" />
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" >
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:textColor="@color/text_home_value"
+                                    android:textSize="@dimen/default_text_size"
+                                    android:text="g"
+                                    android:layout_weight="1"
+                                    android:id="@+id/textView13"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_centerHorizontal="true" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:textColor="@color/text_home_z"
+                                    android:textSize="@dimen/default_text_size"
+                                    android:text="Z"
+                                    android:layout_weight="1"
+                                    android:id="@+id/textView14"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_toLeftOf="@+id/textView13"
+                                    android:layout_toStartOf="@+id/textView13" />
+                            </RelativeLayout>
+
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/lFooterView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/bg_home_button"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_above="@+id/textView15"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical|right"
+            android:text="Last Push-button: "
+            android:textColor="@color/text_home_title"
+            android:textSize="@dimen/home_button_text_size" />
+
+        <TextView
+            android:id="@+id/tvLastPushDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/text_home_value"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:text=""
+        android:id="@+id/textView15"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:textColor="@color/text_home_value"
+        android:layout_alignParentRight="true"
+        android:padding="7dp"
+        android:gravity="center"
+        android:textSize="11sp" />
+</RelativeLayout>

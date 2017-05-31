@@ -1,0 +1,65 @@
+body {
+  font-family: Lato, sans-serif;
+  margin: 0;
+}
+
+.app {
+
+  $app-padding: 8px;
+
+  position: absolute;
+  top: $app-padding;
+  right: $app-padding;
+  bottom: $app-padding;
+  left: $app-padding;
+
+}
+
+.sidebar-nav .rubix-icon {
+  text-align: center ! important;
+}
+
+.rubix-panel-container-with-controls.full-screen {
+
+  .rubix-panel-container {
+
+    margin-bottom: 0;
+
+    .rubix-panel-body {
+      height: calc(100vh - 125px);
+    }
+  }
+}
+
+#sidebar-container {
+  top: 80px ! important;
+}
+
+#rubix-nav-header > .container-fluid {
+  padding: 0 ! important;
+}
+
+.navbar-brand {
+  font-size: 30px ! important;
+  white-space: nowrap;
+  color: white ! important;
+}
+
+.navbar-right {
+  float: right ! important;
+}
+
+.online-status {
+  color: #89949B;
+  padding: 14px 0;
+  font-size: 27px;
+  height: 75px;
+
+  &.online {
+    color: #2EB398;
+  }
+}
+
+* {
+  transition: initial ! important;
+}
