@@ -72,8 +72,8 @@ typedef enum {
 /**
 * Private define ------------------------------------------------------------
 */
-#define APPLICATION_DEBUG_MSG			1
-#define APPLICATION_HARDCODE_SSID		0
+#define APPLICATION_DEBUG_MSG			0
+#define APPLICATION_HARDCODE_SSID		1
 
 
 #define MAX_SCAN_NETWORK 				15
@@ -130,6 +130,8 @@ int findWifiNetwork(wifi_scan *scan_result, uint16_t max_scan_number) {
 	return countNetwork;
 }
 
+char get_value[256];
+
 /**
 * @brief  Wifi Main program
 * @param  None
@@ -141,23 +143,51 @@ int wifi_main(void)
 	uint32_t cnt=0;
 	WiFi_Priv_Mode mode;
 
+
 	/* configure the timers  */
 	Timer_Config( );
 
-	printf("\n\rWiFi is initializing...\n\r");
+	printf("\n\rWiFi is initializing....\n\r");
 
 	p_ind_wifi_socket_data_received = time_ind_wifi_socket_data_received;
 	p_ind_wifi_socket_client_remote_server_closed = time_ind_wifi_socket_client_remote_server_closed;
 
+	memset(&config,0,sizeof(config));
 	config.power=active;
-	config.power_level=high;
+	config.power_level=max;//high;//max?
 	config.dhcp=on;
+	config.ht_mode=WIFI_FALSE;
 	config.web_server=WIFI_TRUE;
 
 	wifi_state = wifi_state_idle;
-	
-	/* Init the wi-fi module */  
+
+	/* Init the wi-fi module */
 	status = wifi_init(&config);
+
+    #if APPLICATION_DEBUG_MSG
+
+		GET_Status_Value(WIFI_SW_VERSION, get_value);
+		printf("%s = %s\n", WIFI_SW_VERSION, get_value);
+
+		GET_Status_Value(WIFI_HW_VERSION, get_value);
+		printf("%s = %s\n", WIFI_HW_VERSION, get_value);
+
+
+	    GET_Configuration_Value(WIFI_IP_HTTP_TIMEOUT, get_value);
+	    printf("%s = %s\n", WIFI_IP_HTTP_TIMEOUT, get_value);
+
+	    GET_Configuration_Value(WIFI_IP_DHCP_TIMEOUT, get_value);
+	    printf("%s = %s\n", WIFI_IP_DHCP_TIMEOUT, get_value);
+
+	    GET_Configuration_Value(WIFI_IP_HOSTNAME, get_value);
+	    printf("%s = %s\n", WIFI_IP_HOSTNAME, get_value);
+
+		GET_Configuration_Value(WIFI_BAS_RATE_MASK, get_value);
+		printf("%s = %s\n", WIFI_BAS_RATE_MASK, get_value);
+
+	    GET_Configuration_Value(WIFI_OPR_RATE_MASK, get_value);
+	    printf("%s = %s\n", WIFI_OPR_RATE_MASK, get_value);
+	#endif
 	
 	if(status!=WiFi_MODULE_SUCCESS)
 	{
@@ -421,6 +451,11 @@ void ind_wifi_error(WiFi_Status_t error_code)
 	#if APPLICATION_DEBUG_MSG
 			wifi_print_status(error_code);
 	#endif
+
+	if (WiFi_MALLOC_FAILED_ERROR == error_code)
+	{
+		(void)HAL_NVIC_SystemReset();
+	}
 }
 void ind_wifi_connection_error(WiFi_Status_t status_code)
 {
@@ -428,6 +463,10 @@ void ind_wifi_connection_error(WiFi_Status_t status_code)
 	printf("\r\n Connection Error");
 			wifi_print_status(status_code);
 	#endif
+	if (WiFi_DISASSOCIATION == status_code)
+	{
+		(void)HAL_NVIC_SystemReset();
+	}
 //	wifi_state = wifi_state_disconnected;
 //	wifi_main();
 }

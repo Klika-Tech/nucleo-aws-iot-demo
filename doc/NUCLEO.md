@@ -10,8 +10,12 @@ The demo device is STM32 Nucleo-64 board with WiFi and sensors expansions. The b
 	- [Setup AWS IoT connection options](#setup-aws-iot-connection-options)
 	- [Setup device certificates](#setup-device-certificates)
 	- [Setup WiFi credentials](#setup-wifi-credentials)
-	- [Deploy to device](#deploy-to-device)	   				
-
+	- [Setup debug messages](#setup-debug-messages)
+- [Deploy to device](#deploy-to-device)	   				
+	- [Deploy to device from Keil](#deploy-to-device-from-keil)
+	- [Deploy to device from SW4STM32 (System Workbench)](#deploy-to-device-from-system-workbench)
+	-  [After deploying](#after-deploying)
+	
 ## Hardware configuration
 
 - [NUCLEO-F401RE](http://www.st.com/en/evaluation-tools/nucleo-f401re.html) - Nucleo Development Board
@@ -98,11 +102,19 @@ In order to setup Wi-Fi AP credentials edit [this file](../nucleo/Projects/Multi
 
 Or set APPLICATION_HARDCODE_SSID in 0 and set wifi network, security mode and secret key from console via USB.
 
+### Setup debug messages
+In order to setup Wi-Fi AP credentials edit [this file](../nucleo/Projects/Multi/Applications/MQTT_AWS/Src/wifi_main.c) 
+
+```c
+#define APPLICATION_DEBUG_MSG			0
+```
+Set this macro to 1 to increase amount of messages printed to serial port.
+
 After that plug-in developer board to PC via USB. 
 
-### Deploy to device
+## Deploy to device
 
-##Deploy to device from Keil:
+### Deploy to device from Keil:
 Rebuild project in Keil.
 
 <p align="left"><img src="./assets/keil-rebuild.png" /></p>
@@ -111,7 +123,7 @@ And load result to developer board.
 
 <p align="left"><img src="./assets/keil-load.png" /></p>
 
-##Deploy to device from SW4STM32:
+### Deploy to device from SW4STM32 (System Workbench):
 Rebuild project in SW4STM32.
 
 <p align="left"><img src="./assets/sw4stm32-rebuild.png" /></p>
@@ -120,6 +132,7 @@ And load result to developer board.
 
 <p align="left"><img src="./assets/sw4stm32-load.png" /></p>
 
+### After deploying
 After that push reset button (black button) on developer board.
 
 For board state monitoring you can connect to board via a Serial protocol (you can use [PuTTy](http://www.putty.org/)).

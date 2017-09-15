@@ -299,6 +299,7 @@ WiFi_Status_t SET_SSID(char* ssid);
 WiFi_Status_t GET_SSID(void);
 WiFi_Status_t SET_Configuration_Value(char* sVar_name,uint32_t aValue);
 WiFi_Status_t GET_Configuration_Value(char* sVar_name,uint32_t *aValue);
+WiFi_Status_t GET_Status_Value(char* sVar_name,uint32_t *aValue);
 WiFi_Status_t SET_Configuration_Addr(char* sVar_name,char* addr);
 WiFi_Status_t Display_Help_Text(void);
 WiFi_Status_t SET_Power_State(WiFi_Power_State_t state);

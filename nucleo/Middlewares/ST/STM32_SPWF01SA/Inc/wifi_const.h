@@ -53,6 +53,7 @@
 #define AT_ATTENTION                            "AT\r"
 #define AT_WIFI_ENABLE                          "AT+S.WIFI=%d\r"
 #define AT_GET_CONFIGURATION_VALUE              "AT+S.GCFG=%s\r"
+#define AT_GET_STATUS_VALUE                     "AT+S.STS=%s\r"
 #define AT_SET_CONFIGURATION_VALUE              "AT+S.SCFG=%s,%d\r"
 #define AT_SET_CONFIGURATION_ADDRESS            "AT+S.SCFG=%s,%s\r"
 //#define AT_GET_SSID                           "AT&F\r"
@@ -112,6 +113,7 @@
 #define WIFI_SLEEP_ENABLED                      "sleep_enabled"
 #define WIFI_HT_MODE                            "wifi_ht_mode"
 #define WIFI_OPR_RATE_MASK                      "wifi_opr_rate_mask"
+#define WIFI_BAS_RATE_MASK 						"wifi_bas_rate_mask"
 #define WIFI_POWERSAVE                          "wifi_powersave"
 #define WIFI_OPERATIONAL_MODE                   "wifi_operational_mode"
 #define WIFI_LISTEN_INTERVAL                    "wifi_listen_interval"
@@ -124,6 +126,12 @@
 #define WIFI_IBSS_IP_DNS_ADDR                   "192.168.2.1"
 #define WIFI_IBSS_IP_MASK                       "255.255.255.0"
 #define WIFI_IP_USE_DHCP                        0
+
+/************ Wi-Fi Status Variables **************/
+#define WIFI_SW_VERSION							"Version"
+#define WIFI_HW_VERSION							"conf_flag"
+/*#define WIFI_RX_RSSI							"rx_rssi"
+#define WIFI_RX_RATEIDX							"rx_rateidx"*/
 
 /**
   * @}

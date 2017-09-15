@@ -231,6 +231,7 @@ int aws_main() {
 	rc = aws_iot_mqtt_connect(&connectParams);
 	if (NONE_ERROR != rc) {
 		ERROR("Error(%d) connecting to %s:%d", rc, connectParams.pHostURL, connectParams.port);
+		(void)HAL_NVIC_SystemReset();
 	}
 	else
 	{
@@ -255,7 +256,7 @@ int aws_main() {
 	MQTTMessageParams Msg = MQTTMessageParamsDefault;
 	Msg.qos = QOS_0;
 	char cPayload[2000];
-	sprintf(cPayload, "%s : %d ", "hello from STM", i);
+	sprintf(cPayload, "%s : %d ", "hello from STM", (int)i);
 	Msg.pPayload = (void *) cPayload;
 
 
@@ -342,7 +343,8 @@ int aws_main() {
 				INFO("       [ACCEL]: (%f, %f, %f)", Accelerometer.x, Accelerometer.y, Accelerometer.z);
 				INFO("       [GYROS]: (%f, %f, %f)", Gyroscope.x, Gyroscope.y, Gyroscope.z);
 				INFO("       [MAGNE]: (%f, %f, %f)", Magnetometer.x, Magnetometer.y, Magnetometer.z);
-				#endif
+				//INFO("  Payload Len: %d", strlen(cPayload));
+			#endif
 #endif
 				delays = DELAYRATIO;
 			}

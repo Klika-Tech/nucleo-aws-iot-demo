@@ -3254,6 +3254,33 @@ WiFi_Status_t Display_Help_Text()
   return status; 
 }
 
+/**
+* @brief  GET_Configuration_Value
+*         Get a wifi status value from the module
+* @param  sVar_name : Name of the status variable
+*         aValue    : value of status variable to be returned to user
+* @retval WiFi_Status_t : status of AT cmd Request
+*/
+WiFi_Status_t GET_Status_Value(char* sVar_name,uint32_t *aValue)
+{
+  int cfg_value_length;
+  WiFi_Status_t status = WiFi_MODULE_SUCCESS;
+
+  Reset_AT_CMD_Buffer();
+
+  /* AT : send AT command */
+  sprintf((char*)WiFi_AT_Cmd_Buff,AT_GET_STATUS_VALUE,sVar_name);
+
+  status = USART_Transmit_AT_Cmd(strlen((char*)WiFi_AT_Cmd_Buff));
+  if(status == WiFi_MODULE_SUCCESS)
+  {
+    status = USART_Receive_AT_Resp(Process_Event);
+    cfg_value_length = strlen((const char*)get_cfg_value);
+    memcpy(aValue,get_cfg_value,cfg_value_length);   //copy user pointer to get_cfg_value
+    memset(get_cfg_value, 0x00,cfg_value_length);
+  }
+  return status;
+}
 
 /**
 * @brief  GET_Configuration_Value

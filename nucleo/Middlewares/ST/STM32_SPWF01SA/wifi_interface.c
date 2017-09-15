@@ -183,7 +183,9 @@ WiFi_Status_t wifi_init(wifi_config* config)
   case WIFI_FALSE:
     status = SET_Configuration_Value(WIFI_HT_MODE, 0);
     if(status != WiFi_MODULE_SUCCESS) return status;
-    status = SET_Configuration_Addr(WIFI_OPR_RATE_MASK, "0x00003FCF");
+    //status = SET_Configuration_Addr(WIFI_OPR_RATE_MASK, "0x00003FCF");
+    status = SET_Configuration_Addr(WIFI_OPR_RATE_MASK, "0x00000001");
+    status = SET_Configuration_Addr(WIFI_BAS_RATE_MASK, "0x0000000F");
     if(status != WiFi_MODULE_SUCCESS) return status;
     break;
   case WIFI_TRUE:
