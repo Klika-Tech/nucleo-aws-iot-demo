@@ -46,7 +46,9 @@ class Main extends React.Component {
         if (loader) {
             return (
                 <div className="app">
-                    <div className="loader"><Loader /></div>
+                    <div className="loader-container">
+                        <Loader />
+                    </div>
                 </div>
             );
         }
