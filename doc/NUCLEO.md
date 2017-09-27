@@ -26,7 +26,7 @@ The demo device is STM32 Nucleo-64 board with WiFi and sensors expansions. The b
 
 ## Build Instruction
 There are two ways to build firmware for AWS IoT communication.
-1) Use [online mbed compiler](https://os.mbed.com/compiler/#nav:/;) and this [instruction](https://os.mbed.com/users/PavelSavyhin/code/Nucleo-AWS-IoT-mbed/).
+1) Use [online mbed compiler](https://os.mbed.com/compiler/#nav:/;) and this [instruction](https://os.mbed.com/teams/Klika-Tech/code/Nucleo-AWS-IoT-mbed/wiki/Homepage).
 2) Use standalone tools, follow next steps to do it.
 
 Projects are generated for [Keil uVision](http://www2.keil.com/mdk5/uvision/) and [SW4STM32](http://www.st.com/en/development-tools/sw4stm32.html).
