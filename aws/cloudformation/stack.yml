@@ -1,0 +1,998 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Template for setup deploying AWS resources for IoT Demo
+Parameters:
+  owmApiKey:
+    Type: String
+    Description: Open Weather Map API key.
+  certificateARN:
+    Type: String
+    Description: The Amazon Resource Name (ARN) of the existing AWS IoT certificate.
+  deployS3Bucket:
+    Type: String
+    Description: S3 Bucket for store Lambdas
+  deployS3weatherLambdaZip:
+    Type: String
+    Description: File name of fetch weather Lambda on S3
+  deployS3getDataLambdaZip:
+    Type: String
+    Description: File name of getData Lambda on S3
+  apiName:
+    Type: String
+    Default: iotDemoApi
+    Description: API used for AWS IoT Demo
+  getDataApiResourcePathPart:
+    Type: String
+    Default: getNucleoData
+    Description: Part of GET API url for Labmda
+  apiDeploymentStageName:
+    Type: String
+    Default: prod
+    Description: API Stage name of deployment
+  dynamoWeatherTableName:
+    Type: String
+    Default: own-weather
+    Description: DynamoDB table name for loaded weather
+  dynamoMetricsTableName:
+    Type: String
+    Default: metrics
+    Description: DynamoDB table name for metrics
+  fetchWeatherLambdaName:
+    Type: String
+    Default: fetchWeather
+    Description: Name of Lambda fetching weather data for cities by cron
+  getDataLambdaName:
+    Type: String
+    Default: getData
+    Description: Name of Lambda fetching load historical data by http api
+  thingName:
+    Type: String
+    Default: Nucleo
+    Description: AWS IoT Thing name
+  mqttDataTopic:
+    Type: String
+    Default: Nucleo/data
+    Description: Mqtt topic for telemetry
+  cognitoPoolName:
+    Type: String
+    Default: Device Metrics
+    Description: Mqtt topic for telemetry
+Outputs:
+  awsRegion:
+    Value: !Ref 'AWS::Region'
+    Description: AWS Backend Region
+  apiUrl:
+    Value: !Join 
+      - ''
+      - - 'https://'
+        - !Ref iotDemoApi
+        - .execute-api.
+        - !Ref 'AWS::Region'
+        - .amazonaws.com/
+        - !Ref apiDeploymentStageName
+        - /
+    Description: API endpoint for getting historical data
+  cognitoIdentityPool:
+    Value: !Ref cognitoPool
+    Description: Public Cognito Identity Pool Id
+  iotEndpoint:
+    Value: !Join 
+      - ''
+      - - data.iot.
+        - !Ref 'AWS::Region'
+        - .amazonaws.com
+    Description: Public AWS IoT endpoint
+  mqttTopic:
+    Value: !Ref mqttDataTopic
+    Description: Public Cognito Identity Pool Id
+  websiteURL:
+    Value: !GetAtt dashboardS3Bucket.WebsiteURL
+    Description: Dashboard S3 hosted website
+Resources:
+  dashboardS3Bucket:
+    Type: 'AWS::S3::Bucket'
+    DeletionPolicy: Delete
+    Properties:
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+      Tags:
+        - Key: cf-stack
+          Value: !Ref 'AWS::StackId'
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: d16ce0d8-2147-45bc-9ef4-15ed1e1d8294
+  dashboardS3BucketPolicy:
+    Type: 'AWS::S3::BucketPolicy'
+    Properties:
+      Bucket: !Ref dashboardS3Bucket
+      PolicyDocument:
+        Id: dashboardS3PublicPolicy
+        Version: 2012-10-17
+        Statement:
+          - Sid: PublicReadForGetBucketObjects
+            Effect: Allow
+            Principal: '*'
+            Action: 's3:GetObject'
+            Resource: !Join 
+              - ''
+              - - 'arn:aws:s3:::'
+                - !Ref dashboardS3Bucket
+                - /*
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: f9ad889e-70cf-49bf-9ff7-6f16fb7aff48
+  weatherDynamoDBTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: !Ref dynamoWeatherTableName
+      AttributeDefinitions:
+        - AttributeName: city
+          AttributeType: 'N'
+        - AttributeName: timestamp
+          AttributeType: 'N'
+      KeySchema:
+        - AttributeName: city
+          KeyType: HASH
+        - AttributeName: timestamp
+          KeyType: RANGE
+      ProvisionedThroughput:
+        ReadCapacityUnits: '3'
+        WriteCapacityUnits: '3'
+      Tags:
+        - Key: cf-stack
+          Value: !Ref 'AWS::StackId'
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: e83c8e8e-9a88-49da-874f-e2a2e6df0d9f
+  metricsDynamoDBTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: !Ref dynamoMetricsTableName
+      AttributeDefinitions:
+        - AttributeName: thing
+          AttributeType: S
+        - AttributeName: timestamp
+          AttributeType: 'N'
+      KeySchema:
+        - AttributeName: thing
+          KeyType: HASH
+        - AttributeName: timestamp
+          KeyType: RANGE
+      ProvisionedThroughput:
+        ReadCapacityUnits: '3'
+        WriteCapacityUnits: '3'
+      Tags:
+        - Key: cf-stack
+          Value: !Ref 'AWS::StackId'
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 5c947e0a-a274-4e92-a1a0-20305c3a404c
+  fetchWeatherLambdaFunction:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      FunctionName: !Ref fetchWeatherLambdaName
+      Handler: index.handler
+      MemorySize: '128'
+      Role: !GetAtt fetchWeatherLambdaExecutionRole.Arn
+      Code:
+        S3Bucket: !Ref deployS3Bucket
+        S3Key: !Ref deployS3weatherLambdaZip
+      Runtime: nodejs6.10
+      Timeout: '10'
+      Environment:
+        Variables:
+          OWN_API_KEY: !Ref owmApiKey
+          DYNAMO_DB_WEATHER_TABLE_NAME: !Ref dynamoWeatherTableName
+      Tags:
+        - Key: cf-stack
+          Value: !Ref 'AWS::StackId'
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: bb0a2699-0dc4-4c1a-8e2b-06e92735e78a
+  fetchWeatherLambdaExecutionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Policies:
+        - PolicyName: fetchWeatherRolePolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'dynamodb:DeleteItem'
+                  - 'dynamodb:GetItem'
+                  - 'dynamodb:PutItem'
+                  - 'dynamodb:Query'
+                  - 'dynamodb:Scan'
+                  - 'dynamodb:UpdateItem'
+                Resource: !Join 
+                  - ''
+                  - - 'arn:aws:dynamodb:'
+                    - !Ref 'AWS::Region'
+                    - ':'
+                    - !Ref 'AWS::AccountId'
+                    - ':table/'
+                    - !Ref weatherDynamoDBTable
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: cbd13d6c-7029-456b-a861-a2c013351de7
+  fetchWeatherCronEvent:
+    Type: 'AWS::Events::Rule'
+    Properties:
+      ScheduleExpression: cron(0/15 * * * ? *)
+      Targets:
+        - Arn: !GetAtt fetchWeatherLambdaFunction.Arn
+          Id: fetchWeatherCronTrigger
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: faa6d046-9de1-4d52-ba9e-42aad89f3dd7
+  invokeFetchWeatherPermission:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      FunctionName: !GetAtt fetchWeatherLambdaFunction.Arn
+      Action: 'lambda:InvokeFunction'
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt fetchWeatherCronEvent.Arn
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 8666b6cc-9ab9-4850-932e-5b24ab7ca488
+  iotThing:
+    Type: 'AWS::IoT::Thing'
+    Properties:
+      ThingName: !Ref thingName
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 21cfeff0-637e-4b6f-acd5-5de59dc04008
+  iotPolicy:
+    Type: 'AWS::IoT::Policy'
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Action: 'iot:*'
+            Effect: Allow
+            Resource: '*'
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 7ed91726-213b-4556-bfdc-2e72c079881d
+  iotPolicyPrincipalAttachment:
+    Type: 'AWS::IoT::PolicyPrincipalAttachment'
+    Properties:
+      PolicyName: !Ref iotPolicy
+      Principal: !Ref certificateARN
+  iotThingPrincipalAttachment:
+    Type: 'AWS::IoT::ThingPrincipalAttachment'
+    Properties:
+      Principal: !Ref certificateARN
+      ThingName: !Ref iotThing
+  storeMarkersIotRule:
+    Type: 'AWS::IoT::TopicRule'
+    Properties:
+      RuleName: storeMarkers
+      TopicRulePayload:
+        RuleDisabled: 'false'
+        AwsIotSqlVersion: 2016-03-23
+        Sql: !Sub 
+          - 'SELECT * FROM ''${mqttTopic}'' WHERE marker = true'
+          - mqttTopic: !Ref mqttDataTopic
+        Actions:
+          - DynamoDB:
+              RoleArn: !GetAtt iotDynamoPutRole.Arn
+              TableName: !Ref dynamoMetricsTableName
+              HashKeyField: thing
+              HashKeyType: STRING
+              HashKeyValue: !Ref thingName
+              RangeKeyField: timestamp
+              RangeKeyType: NUMBER
+              RangeKeyValue: '${timestamp() / 1000}'
+              PayloadField: payload
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 7258f18d-dfe4-44ef-beba-a64a56875b69
+  storeMetricsIotRule:
+    Type: 'AWS::IoT::TopicRule'
+    Properties:
+      RuleName: storeMetrics
+      TopicRulePayload:
+        RuleDisabled: 'false'
+        AwsIotSqlVersion: 2016-03-23
+        Sql: !Sub 
+          - >-
+            SELECT state.reported.temperature, state.reported.humidity,
+            state.reported.pressure, state.reported.accelerometer,
+            state.reported.gyroscope, state.reported.magnetometer, timestamp
+            FROM '$aws/things/${thingName}/shadow/update/accepted'
+          - mqttTopic: !Ref mqttDataTopic
+        Actions:
+          - DynamoDB:
+              RoleArn: !GetAtt iotDynamoPutRole.Arn
+              TableName: !Ref dynamoMetricsTableName
+              HashKeyField: thing
+              HashKeyType: STRING
+              HashKeyValue: !Ref thingName
+              RangeKeyField: timestamp
+              RangeKeyType: NUMBER
+              RangeKeyValue: '${metadata.reported.temperature.timestamp}'
+              PayloadField: payload
+          - Republish:
+              RoleArn: !GetAtt iotRepublishRole.Arn
+              Topic: !Ref mqttDataTopic
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: f5a214cd-5aea-4bf4-be34-8c3a298518eb
+  iotDynamoPutRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - iot.amazonaws.com
+            Action: 'sts:AssumeRole'
+      Policies:
+        - PolicyName: iotUseMetricsTable
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action: 'dynamodb:PutItem'
+                Resource: !Join 
+                  - ''
+                  - - 'arn:aws:dynamodb:'
+                    - !Ref 'AWS::Region'
+                    - ':'
+                    - !Ref 'AWS::AccountId'
+                    - ':table/'
+                    - !Ref metricsDynamoDBTable
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 80810e16-f859-475a-bf0e-efe2b0b2a34e
+  iotRepublishRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - iot.amazonaws.com
+            Action: 'sts:AssumeRole'
+      Policies:
+        - PolicyName: iotRepublishToDataTopic
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action: 'iot:Publish'
+                Resource: !Join 
+                  - ''
+                  - - 'arn:aws:iot:'
+                    - !Ref 'AWS::Region'
+                    - ':'
+                    - !Ref 'AWS::AccountId'
+                    - ':topic/'
+                    - !Ref mqttDataTopic
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: cec50983-3f0a-4a10-b845-0b53b32b1449
+  cognitoPool:
+    Type: 'AWS::Cognito::IdentityPool'
+    Properties:
+      IdentityPoolName: !Ref cognitoPoolName
+      AllowUnauthenticatedIdentities: true
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: d45b8f5f-0d33-41c5-a043-2c0cdcf411da
+  cognitoPoolRoleMapping:
+    Type: 'AWS::Cognito::IdentityPoolRoleAttachment'
+    Properties:
+      IdentityPoolId: !Ref cognitoPool
+      Roles:
+        authenticated: !GetAtt cognitoAuthorizedRole.Arn
+        unauthenticated: !GetAtt cognitoUnAuthorizedRole.Arn
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: a3eaf0e6-ac22-4b4f-9eae-049b2b591664
+  cognitoUnAuthorizedRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: cognito-identity.amazonaws.com
+            Action:
+              - 'sts:AssumeRoleWithWebIdentity'
+            Condition:
+              StringEquals:
+                'cognito-identity.amazonaws.com:aud': !Ref cognitoPool
+              'ForAnyValue:StringLike':
+                'cognito-identity.amazonaws.com:amr': unauthenticated
+      Policies:
+        - PolicyName: cognitoIotUnAuthRole
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action: 'iot:*'
+                Resource: '*'
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 52a03e07-d30d-44ab-bd5b-f28f9a99c1de
+  cognitoAuthorizedRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: cognito-identity.amazonaws.com
+            Action:
+              - 'sts:AssumeRoleWithWebIdentity'
+            Condition:
+              StringEquals:
+                'cognito-identity.amazonaws.com:aud': !Ref cognitoPool
+              'ForAnyValue:StringLike':
+                'cognito-identity.amazonaws.com:amr': authenticated
+      Policies:
+        - PolicyName: cognitoIotAuthRole
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action: 'iot:*'
+                Resource: '*'
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: ab1aefee-2225-4ba0-8f32-b630f8209d41
+  getDataLambda:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      FunctionName: !Ref getDataLambdaName
+      Code:
+        S3Bucket: !Ref deployS3Bucket
+        S3Key: !Ref deployS3getDataLambdaZip
+      Handler: index.handler
+      MemorySize: '256'
+      Role: !GetAtt getDataLambdaExecutionRole.Arn
+      Runtime: nodejs6.10
+      Timeout: '60'
+      Environment:
+        Variables:
+          THING_NAME: !Ref thingName
+          DYNAMO_DB_METRICS_TABLE_NAME: !Ref dynamoMetricsTableName
+          DYNAMO_DB_METRICS_TABLE_KEY: thing
+          DYNAMO_DB_WEATHER_TABLE_NAME: !Ref dynamoWeatherTableName
+      Tags:
+        - Key: cf-stack
+          Value: !Ref 'AWS::StackId'
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 64c6000f-f1fa-48fb-bd69-4f2c735d60f4
+  getDataLambdaExecutionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Policies:
+        - PolicyName: getDataRolePolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'dynamodb:DeleteItem'
+                  - 'dynamodb:GetItem'
+                  - 'dynamodb:PutItem'
+                  - 'dynamodb:Query'
+                  - 'dynamodb:Scan'
+                  - 'dynamodb:UpdateItem'
+                Resource: !Join 
+                  - ''
+                  - - 'arn:aws:dynamodb:'
+                    - !Ref 'AWS::Region'
+                    - ':'
+                    - !Ref 'AWS::AccountId'
+                    - ':table/'
+                    - !Ref weatherDynamoDBTable
+              - Effect: Allow
+                Action:
+                  - 'dynamodb:DeleteItem'
+                  - 'dynamodb:GetItem'
+                  - 'dynamodb:PutItem'
+                  - 'dynamodb:Query'
+                  - 'dynamodb:Scan'
+                  - 'dynamodb:UpdateItem'
+                Resource: !Join 
+                  - ''
+                  - - 'arn:aws:dynamodb:'
+                    - !Ref 'AWS::Region'
+                    - ':'
+                    - !Ref 'AWS::AccountId'
+                    - ':table/'
+                    - !Ref dynamoMetricsTableName
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: cbd13d6c-7029-456b-a861-a2c013351de7
+  iotDemoApi:
+    Type: 'AWS::ApiGateway::RestApi'
+    Properties:
+      Name: !Ref apiName
+      FailOnWarnings: false
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 1e7baa7a-63a5-45f3-ac54-71bc40bc78a4
+  apiLambdaInvokePermission:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      Action: 'lambda:invokeFunction'
+      FunctionName: !GetAtt getDataLambda.Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        'Fn::Join':
+          - ''
+          - - 'arn:aws:execute-api:'
+            - !Ref 'AWS::Region'
+            - ':'
+            - !Ref 'AWS::AccountId'
+            - ':'
+            - !Ref iotDemoApi
+            - /*
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 04212d06-45dc-40a4-a112-42ed26a6adfd
+  apiGatewayCloudWatchLogsRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - apigateway.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Policies:
+        - PolicyName: apiGatewayLogsPolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'logs:CreateLogGroup'
+                  - 'logs:CreateLogStream'
+                  - 'logs:DescribeLogGroups'
+                  - 'logs:DescribeLogStreams'
+                  - 'logs:PutLogEvents'
+                  - 'logs:GetLogEvents'
+                  - 'logs:FilterLogEvents'
+                Resource: '*'
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 7b1ee7c0-a310-4965-b73e-1d5a80444286
+  apiGatewayAccount:
+    Type: 'AWS::ApiGateway::Account'
+    Properties:
+      CloudWatchRoleArn: !GetAtt apiGatewayCloudWatchLogsRole.Arn
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 2bfef767-51f3-41d2-b5f1-6fa3be109dbe
+  iotDemoDeployment:
+    Type: 'AWS::ApiGateway::Deployment'
+    DependsOn: getDataRequestGET
+    Properties:
+      RestApiId: !Ref iotDemoApi
+      StageName: !Ref apiDeploymentStageName
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: a43da6d7-212e-4e30-ae80-fc9f32813424
+  getDataApiResource:
+    Type: 'AWS::ApiGateway::Resource'
+    Properties:
+      RestApiId: !Ref iotDemoApi
+      ParentId: !GetAtt iotDemoApi.RootResourceId
+      PathPart: !Ref getDataApiResourcePathPart
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: c93f542f-c4a3-461e-a912-dfb4f7c20076
+  getDataRequestGET:
+    DependsOn: apiLambdaInvokePermission
+    Type: 'AWS::ApiGateway::Method'
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: GET
+      Integration:
+        Type: AWS
+        IntegrationHttpMethod: POST
+        Uri:
+          'Fn::Join':
+            - ''
+            - - 'arn:aws:apigateway:'
+              - !Ref 'AWS::Region'
+              - ':lambda:path/2015-03-31/functions/'
+              - !GetAtt getDataLambda.Arn
+              - /invocations
+        RequestTemplates:
+          application/json: |
+            {
+                "since": $input.params('since')
+            }
+        IntegrationResponses:
+          - ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: '''*'''
+            ResponseTemplates:
+              application/json: ''
+            StatusCode: 200
+      ResourceId: !Ref getDataApiResource
+      RestApiId: !Ref iotDemoApi
+      MethodResponses:
+        - ResponseModels:
+            application/json: Empty
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+          StatusCode: '200'
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 7b6a44ef-856e-46f9-b3a9-8c3b075951fb
+  getDataRequestOPTIONS:
+    DependsOn: apiLambdaInvokePermission
+    Type: 'AWS::ApiGateway::Method'
+    Properties:
+      ResourceId: !Ref getDataApiResource
+      RestApiId: !Ref iotDemoApi
+      AuthorizationType: NONE
+      HttpMethod: OPTIONS
+      Integration:
+        Type: MOCK
+        IntegrationResponses:
+          - ResponseParameters:
+              method.response.header.Access-Control-Allow-Headers: >-
+                'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'
+              method.response.header.Access-Control-Allow-Methods: '''GET,POST,OPTIONS'''
+              method.response.header.Access-Control-Allow-Origin: '''*'''
+            ResponseTemplates:
+              application/json: ''
+            StatusCode: '200'
+        PassthroughBehavior: NEVER
+        RequestTemplates:
+          application/json: '{"statusCode": 200}'
+      MethodResponses:
+        - ResponseModels:
+            application/json: Empty
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: true
+            method.response.header.Access-Control-Allow-Methods: true
+            method.response.header.Access-Control-Allow-Origin: true
+          StatusCode: '200'
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: d75111d8-c2d4-49d3-8a37-18aea97658d7
+Metadata:
+  'AWS::CloudFormation::Designer':
+    7ed91726-213b-4556-bfdc-2e72c079881d:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: -70
+        'y': 30
+      z: 1
+      embeds: []
+    21cfeff0-637e-4b6f-acd5-5de59dc04008:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: 130
+        'y': 30
+      z: 1
+      embeds: []
+    5c947e0a-a274-4e92-a1a0-20305c3a404c:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: -70
+        'y': 200
+      z: 1
+      embeds: []
+    e83c8e8e-9a88-49da-874f-e2a2e6df0d9f:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: -160
+        'y': 200
+      z: 1
+      embeds: []
+    cbd13d6c-7029-456b-a861-a2c013351de7:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: -280
+        'y': 320
+      z: 1
+      embeds: []
+      isrelatedto:
+        - e83c8e8e-9a88-49da-874f-e2a2e6df0d9f
+    bb0a2699-0dc4-4c1a-8e2b-06e92735e78a:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: -390
+        'y': 400
+      z: 1
+      embeds: []
+      isrelatedto:
+        - cbd13d6c-7029-456b-a861-a2c013351de7
+    faa6d046-9de1-4d52-ba9e-42aad89f3dd7:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: -280
+        'y': 500
+      z: 1
+      embeds: []
+      isrelatedto:
+        - bb0a2699-0dc4-4c1a-8e2b-06e92735e78a
+    8666b6cc-9ab9-4850-932e-5b24ab7ca488:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: -390
+        'y': 500
+      z: 1
+      embeds: []
+      isassociatedwith:
+        - bb0a2699-0dc4-4c1a-8e2b-06e92735e78a
+      isrelatedto:
+        - faa6d046-9de1-4d52-ba9e-42aad89f3dd7
+    d16ce0d8-2147-45bc-9ef4-15ed1e1d8294:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: 70
+        'y': 600
+      z: 1
+      embeds: []
+    f9ad889e-70cf-49bf-9ff7-6f16fb7aff48:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: -70
+        'y': 600
+      z: 1
+      embeds: []
+      isassociatedwith:
+        - d16ce0d8-2147-45bc-9ef4-15ed1e1d8294
+    1bb4d463-0481-4c53-a391-df949a3cb784:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: -280.8554688214481
+        'y': 145.28100563692664
+      z: 0
+      embeds: []
+    7258f18d-dfe4-44ef-beba-a64a56875b69:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: 30
+        'y': 30
+      z: 1
+      embeds: []
+      isrelatedto:
+        - 80810e16-f859-475a-bf0e-efe2b0b2a34e
+    80810e16-f859-475a-bf0e-efe2b0b2a34e:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: 30
+        'y': 200
+      z: 1
+      embeds: []
+      isrelatedto:
+        - 5c947e0a-a274-4e92-a1a0-20305c3a404c
+    d45b8f5f-0d33-41c5-a043-2c0cdcf411da:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: 70
+        'y': 490
+      z: 1
+      embeds: []
+    ab1aefee-2225-4ba0-8f32-b630f8209d41:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: -70
+        'y': 330
+      z: 1
+      embeds: []
+      isrelatedto:
+        - d45b8f5f-0d33-41c5-a043-2c0cdcf411da
+    52a03e07-d30d-44ab-bd5b-f28f9a99c1de:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: 70
+        'y': 330
+      z: 1
+      embeds: []
+      isrelatedto:
+        - d45b8f5f-0d33-41c5-a043-2c0cdcf411da
+    a3eaf0e6-ac22-4b4f-9eae-049b2b591664:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: -70
+        'y': 490
+      z: 1
+      embeds: []
+      isassociatedwith:
+        - d45b8f5f-0d33-41c5-a043-2c0cdcf411da
+      isrelatedto:
+        - ab1aefee-2225-4ba0-8f32-b630f8209d41
+        - 52a03e07-d30d-44ab-bd5b-f28f9a99c1de
+    cec50983-3f0a-4a10-b845-0b53b32b1449:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: 230
+        'y': 200
+      z: 1
+      embeds: []
+    f5a214cd-5aea-4bf4-be34-8c3a298518eb:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: 130
+        'y': 200
+      z: 1
+      embeds: []
+      isrelatedto:
+        - 80810e16-f859-475a-bf0e-efe2b0b2a34e
+        - cec50983-3f0a-4a10-b845-0b53b32b1449
+    64c6000f-f1fa-48fb-bd69-4f2c735d60f4:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: -390
+        'y': 320
+      z: 1
+      embeds: []
+      isrelatedto:
+        - cbd13d6c-7029-456b-a861-a2c013351de7
+    7b1ee7c0-a310-4965-b73e-1d5a80444286:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: -640
+        'y': 20
+      z: 1
+      embeds: []
+    2bfef767-51f3-41d2-b5f1-6fa3be109dbe:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: -740
+        'y': 20
+      z: 1
+      embeds: []
+      isrelatedto:
+        - 7b1ee7c0-a310-4965-b73e-1d5a80444286
+    1e7baa7a-63a5-45f3-ac54-71bc40bc78a4:
+      size:
+        width: 210
+        height: 230
+      position:
+        x: -650
+        'y': 180
+      z: 1
+      embeds:
+        - d75111d8-c2d4-49d3-8a37-18aea97658d7
+        - 7b6a44ef-856e-46f9-b3a9-8c3b075951fb
+    c93f542f-c4a3-461e-a912-dfb4f7c20076:
+      size:
+        width: 150
+        height: 120
+      position:
+        x: -860
+        'y': 180
+      z: 0
+      embeds: []
+      isassociatedwith:
+        - 1e7baa7a-63a5-45f3-ac54-71bc40bc78a4
+    04212d06-45dc-40a4-a112-42ed26a6adfd:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: -390
+        'y': 80
+      z: 1
+      embeds: []
+      isassociatedwith:
+        - 64c6000f-f1fa-48fb-bd69-4f2c735d60f4
+      isrelatedto:
+        - 1e7baa7a-63a5-45f3-ac54-71bc40bc78a4
+    d75111d8-c2d4-49d3-8a37-18aea97658d7:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: -570
+        'y': 220
+      z: 2
+      parent: 1e7baa7a-63a5-45f3-ac54-71bc40bc78a4
+      embeds: []
+      dependson:
+        - 04212d06-45dc-40a4-a112-42ed26a6adfd
+    7b6a44ef-856e-46f9-b3a9-8c3b075951fb:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: -570
+        'y': 320
+      z: 2
+      parent: 1e7baa7a-63a5-45f3-ac54-71bc40bc78a4
+      embeds: []
+      dependson:
+        - 04212d06-45dc-40a4-a112-42ed26a6adfd
+      isrelatedto:
+        - 64c6000f-f1fa-48fb-bd69-4f2c735d60f4
+    a43da6d7-212e-4e30-ae80-fc9f32813424:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: -810
+        'y': 320
+      z: 1
+      embeds: []
+      isassociatedwith:
+        - 1e7baa7a-63a5-45f3-ac54-71bc40bc78a4
+      dependson:
+        - 7b6a44ef-856e-46f9-b3a9-8c3b075951fb

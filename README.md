@@ -13,6 +13,9 @@ You can see the live demo [here](http://iot-demo.nucleo.klika-tech.com/#/dashboa
 - [Overview](doc/OVERVIEW.md)
 	- [Platform Scheme](doc/OVERVIEW.md#platform-scheme)
 	- [Components](doc/OVERVIEW.md#components)
+- [Guides](doc/GUIDES.md)
+    - [AWS setup via CloudFormation](doc/GUIDES.md#aws-setup-via-cloudformation)
+    - [Setup Firmware via Mbed](doc/GUIDES.md#setup-firmware-via-mbed)
 - [Back-end](doc/BACKEND.md)
 	- [Components](doc/BACKEND.md#components)
 	- [Amazon DynamoDB](doc/BACKEND.md#amazon-dynamodb)
@@ -51,6 +54,7 @@ You can see the live demo [here](http://iot-demo.nucleo.klika-tech.com/#/dashboa
 	- [System Workbench for STM32](http://www.st.com/en/development-tools/sw4stm32.html)
 	- [Gradle](https://gradle.org/)
     - [Android Studio](https://developer.android.com/studio/index.html)
+    - [Mbed](https://www.mbed.com/en/)
 - Libraries
 	- [React.js](https://facebook.github.io/react/)
 	- [D3.js](https://d3js.org/)
@@ -71,4 +75,5 @@ You can see the live demo [here](http://iot-demo.nucleo.klika-tech.com/#/dashboa
 	- [Amazon CloudWatch](http://aws.amazon.com/cloudwatch/)
 	- [Amazon Cognito](http://aws.amazon.com/cognito/)
 	- [Amazon S3](http://aws.amazon.com/s3/)
+    - [AWS CloudFormation](https://aws.amazon.com/cloudformation/)
 	- [OpenWeatherMap API](http://openweathermap.org/)
