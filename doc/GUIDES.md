@@ -10,13 +10,13 @@ This section allows you to get a quick setup of the environment.
 
 ## AWS Setup via CloudFormation
 
-_NOTE: This instruction for Linux/MacOS users ONLY_
+_NOTE: This instruction is for Linux/MacOS users ONLY_
 
 [AWS CloudFormation](https://aws.amazon.com/cloudformation/) is a service that helps you model and set up your Amazon Web Services resources so that you can spend less time managing those resources and more time focusing on your applications that run in AWS. You create a template that describes all the AWS resources that you want (like Amazon EC2 instances or Amazon RDS DB instances), and AWS CloudFormation takes care of provisioning and configuring those resources for you. You don't need to individually create and configure AWS resources and figure out what's dependent on what; AWS CloudFormation handles all of that.
 
-For easy setup, we prepare stack template which set up all [Backend](./BACKEND.md), except [Generate Nucleo Data Lambda](./BACKEND.md#generate-nucleo-data), generate certificates and sign them, setup and deploy [Web Dashboard](./DASHBOARD.md).
+For an easy setup, we prepare a stack template which sets up all [Backend](./BACKEND.md), except [Generate Nucleo Data Lambda](./BACKEND.md#generate-nucleo-data), generates certificates and signs them, setups and deploys [Web Dashboard](./DASHBOARD.md).
 
-Here is the link to [stack template](../aws/cloudformation/stack.yml).
+Here is the link to the [stack template](../aws/cloudformation/stack.yml).
 You can see the stack schema below.
 
 <p align="left">
@@ -55,4 +55,4 @@ Open terminal, change directory to [cloudformation directory](../aws/cloudformat
 
 [Mbed](https://www.mbed.com/en/) is a platform and operating system for internet-connected devices based on 32-bit ARM Cortex-M microcontrollers. Such devices are also known as Internet of Things devices. The project is collaboratively developed by ARM and its technology partners.
 
-For additional simplicity of firmware build process, we've prepared [mbed project template](https://os.mbed.com/teams/Klika-Tech/code/Nucleo-AWS-IoT-mbed/) and [instruction](https://os.mbed.com/teams/Klika-Tech/code/Nucleo-AWS-IoT-mbed/wiki/Homepage).
+For a simpler firmware build process, we've prepared [mbed project template](https://os.mbed.com/teams/Klika-Tech/code/Nucleo-AWS-IoT-mbed/) and [instruction](https://os.mbed.com/teams/Klika-Tech/code/Nucleo-AWS-IoT-mbed/wiki/Homepage).
