@@ -37,8 +37,8 @@ export function prepareDataItem(type, scaleUnit) {
 }
 
 export const fetch = (actionType, type, pdi) => (fullData) => {
-    const sensorData = _.get(fullData, 'citiesData', []).map(pdi);
-    const citiesData = _.get(fullData, 'weatherData', []).map(d => ({
+    const sensorData = _.get(fullData, 'sensorData', []).map(pdi);
+    const citiesData = _.get(fullData, 'citiesData', []).map(d => ({
         cityId: d.cityId,
         cityName: d.cityName,
         data: d[type].map(pdi),
